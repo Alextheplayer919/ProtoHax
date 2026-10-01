@@ -1,0 +1,36 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'coelho.msftauth'
+version = '2.1.6'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.opencollab.dev/maven-releases/' }
+    maven { url = 'https://repo.opencollab.dev/maven-snapshots/' }
+}
+
+java {
+    withSourcesJar()
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            // Desktop-only interactive login (JavaFX/WebKit); the relay uses
+            // only the headless api.* auth chain.
+            java.exclude 'coelho/msftauth/auth/**'
+            java.exclude 'coelho/msftauth/MsftAuth.java'
+        }
+    }
+}
+
+dependencies {
+    api 'com.google.guava:guava:30.0-jre'
+    api 'com.google.code.gson:gson:2.10.1'
+    // commons-codec is not served by the central mirror; nothing compiled here needs it.
+    api('org.apache.httpcomponents:httpclient:4.5.13') {
+        exclude group: 'org.apache.commons.codec'
+    }
+    api 'org.bouncycastle:bcprov-jdk15on:1.68'
+    api 'com.squareup.okhttp3:okhttp:4.11.0'
+}

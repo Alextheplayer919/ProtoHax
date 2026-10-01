@@ -23,11 +23,11 @@ class ModuleSpammer : CheatModule("Spammer", CheatCategory.MISC) {
 			xuid = session.player.xuid
 			sourceName = session.player.username
 			platformChatId = ""
-			message = messageValue.let { if (randomSuffix) "$it >${getRandomString(10 + Random.nextInt(5))}<" else it }.let {
+			setMessage(messageValue.let { if (randomSuffix) "$it >${getRandomString(10 + Random.nextInt(5))}<" else it }.let {
 				var result = it
 				placeholders.forEach { (k, v) -> result = result.replace(k, v) }
 				result
-			}
+			})
 		})
 	}
 

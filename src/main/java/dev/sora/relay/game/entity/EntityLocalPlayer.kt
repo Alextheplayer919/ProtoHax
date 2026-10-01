@@ -19,6 +19,7 @@ import org.cloudburstmc.protocol.bedrock.data.inventory.ItemData
 import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventoryActionData
 import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventorySource
 import org.cloudburstmc.protocol.bedrock.data.inventory.transaction.InventoryTransactionType
+import org.cloudburstmc.protocol.bedrock.data.auth.CertificateChainPayload
 import org.cloudburstmc.protocol.bedrock.packet.*
 import java.util.*
 import kotlin.math.atan2
@@ -183,7 +184,7 @@ class EntityLocalPlayer(private val session: GameSession, override val eventMana
 			soundServerAuthoritative = false
 			hasSetEntityId = false
 
-			packet.chain.forEach {
+			(packet.authPayload as? CertificateChainPayload)?.chain?.forEach {
 				val chainBody = jwtPayload(it) ?: return@forEach
 				if (chainBody.has("extraData")) {
 					val extraData = chainBody.getAsJsonObject("extraData")

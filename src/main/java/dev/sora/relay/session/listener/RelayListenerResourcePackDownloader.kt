@@ -36,7 +36,7 @@ class RelayListenerResourcePackDownloader(private val session: MinecraftRelaySes
 			packs.forEach {
 			}
 		} else if (packet is ResourcePackChunkDataPacket) {
-			val pack = packs.find { it.entry.packId == packet.packId.toString() } ?: return true
+			val pack = packs.find { it.entry.packId == packet.packId } ?: return true
 			pack.data.writerIndex(packet.progress.toInt())
 			packet.data.markReaderIndex()
 			pack.data.writeBytes(packet.data)
@@ -55,14 +55,14 @@ class RelayListenerResourcePackDownloader(private val session: MinecraftRelaySes
 
 				if (packs.isEmpty()) {
 					session.inboundPacket(DisconnectPacket().apply {
-						kickMessage = "${GameSession.COLORED_NAME}§7 >> §fResource packs was successfully downloaded!"
+						setKickMessage("${GameSession.COLORED_NAME}§7 >> §fResource packs was successfully downloaded!")
 					})
 				}
 			}
 		} else if (packet is ResourcePackDataInfoPacket) {
-			val pack = packs.find { it.entry.packId == packet.packId.toString() } ?: return true
+			val pack = packs.find { it.entry.packId == packet.packId } ?: return true
 			pack.chunks = packet.chunkCount.toInt()
-			if (clientAcknowledgements.contains(pack.entry.packId))
+			if (clientAcknowledgements.contains(pack.entry.packId.toString()))
 				return true
 
 			for (i in 0 until pack.chunks) {

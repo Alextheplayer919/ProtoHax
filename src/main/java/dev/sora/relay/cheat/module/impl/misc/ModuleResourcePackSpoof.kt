@@ -34,7 +34,7 @@ class ModuleResourcePackSpoof : CheatModule("ResourcePackSpoof", CheatCategory.M
 			}
 			// this will make the client load the resource pack
 			packet.resourcePacks.addAll(resourcePackProvider.getEntry().map {
-				ResourcePackStackPacket.Entry(it.packId, it.packVersion, it.subPackName)
+				ResourcePackStackPacket.Entry(it.packId.toString(), it.packVersion, it.subPackName)
 			})
 		}
 	}
@@ -45,7 +45,7 @@ class ModuleResourcePackSpoof : CheatModule("ResourcePackSpoof", CheatCategory.M
 				packet.packIds.map { it }.forEach {
 					val entry = resourcePackProvider.getPackById(it) ?: return@forEach
 					session.netSession.inboundPacket(ResourcePackDataInfoPacket().apply {
-						packId = UUID.fromString(entry.first.packId)
+						packId = entry.first.packId
 						packVersion = entry.first.packVersion
 						maxChunkSize = RESOURCE_PACK_CHUNK_SIZE.toLong()
 						chunkCount = entry.first.packSize / RESOURCE_PACK_CHUNK_SIZE
@@ -115,7 +115,7 @@ class ModuleResourcePackSpoof : CheatModule("ResourcePackSpoof", CheatCategory.M
             ?.associate {
                 val data = it.readBytes()
                 val manifest = readManifest(it)
-                ResourcePacksInfoPacket.Entry(manifest.first, manifest.second, data.size.toLong(), "", "", "", false, false) to data
+                ResourcePacksInfoPacket.Entry(UUID.fromString(manifest.first), manifest.second, data.size.toLong(), "", "", "", false, false, false, "") to data
             } ?: emptyMap()
 
         private fun readManifest(file: File): Pair<String, String> {
@@ -132,7 +132,7 @@ class ModuleResourcePackSpoof : CheatModule("ResourcePackSpoof", CheatCategory.M
         override fun getPackById(id: String): Pair<ResourcePacksInfoPacket.Entry, ByteArray>? {
             val subId = id.substring(0, id.indexOf('_'))
             files.forEach {
-                if (it.key.packId == subId) {
+                if (it.key.packId.toString() == subId) {
                     return it.key to it.value
                 }
             }

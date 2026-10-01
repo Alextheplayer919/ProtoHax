@@ -5,6 +5,7 @@ import dev.sora.relay.game.utils.removeNetInfo
 import org.cloudburstmc.protocol.bedrock.data.inventory.ContainerId
 import org.cloudburstmc.protocol.bedrock.data.inventory.ContainerSlotType
 import org.cloudburstmc.protocol.bedrock.data.inventory.ItemData
+import org.cloudburstmc.protocol.bedrock.data.inventory.FullContainerName
 import org.cloudburstmc.protocol.bedrock.data.inventory.itemstack.request.ItemStackRequest
 import org.cloudburstmc.protocol.bedrock.data.inventory.itemstack.request.ItemStackRequestSlotData
 import org.cloudburstmc.protocol.bedrock.data.inventory.itemstack.request.action.DropAction
@@ -53,16 +54,16 @@ abstract class AbstractInventory(val containerId: Int) {
 				if (dst == ItemData.AIR) {
 					it.requests.add(ItemStackRequest(serverAuthoritative,
 						arrayOf(PlaceAction(src.count,
-							ItemStackRequestSlotData(getSlotTypeFromInventoryId(sourceInfo.first, sourceSlot), sourceInfo.second, src.netId),
-							ItemStackRequestSlotData(getSlotTypeFromInventoryId(destinationInfo.first, destinationSlot), destinationInfo.second, dst.netId)
+							ItemStackRequestSlotData(getSlotTypeFromInventoryId(sourceInfo.first, sourceSlot), sourceInfo.second, src.netId, FullContainerName(ContainerSlotType.INVENTORY, null)),
+							ItemStackRequestSlotData(getSlotTypeFromInventoryId(destinationInfo.first, destinationSlot), destinationInfo.second, dst.netId, FullContainerName(ContainerSlotType.INVENTORY, null))
 						)),
 						arrayOf(), null
 					))
 				} else {
 					it.requests.add(ItemStackRequest(serverAuthoritative,
 						arrayOf(SwapAction(
-							ItemStackRequestSlotData(getSlotTypeFromInventoryId(sourceInfo.first, sourceSlot), sourceInfo.second, src.netId),
-							ItemStackRequestSlotData(getSlotTypeFromInventoryId(destinationInfo.first, destinationSlot), destinationInfo.second, dst.netId)
+							ItemStackRequestSlotData(getSlotTypeFromInventoryId(sourceInfo.first, sourceSlot), sourceInfo.second, src.netId, FullContainerName(ContainerSlotType.INVENTORY, null)),
+							ItemStackRequestSlotData(getSlotTypeFromInventoryId(destinationInfo.first, destinationSlot), destinationInfo.second, dst.netId, FullContainerName(ContainerSlotType.INVENTORY, null))
 						)),
 						arrayOf(), null
 					))
@@ -114,7 +115,7 @@ abstract class AbstractInventory(val containerId: Int) {
             ItemStackRequestPacket().also {
 				val item = content[slot]
                 it.requests.add(ItemStackRequest(serverAuthoritative,
-                    arrayOf(DropAction(item.count, ItemStackRequestSlotData(getSlotTypeFromInventoryId(info.first, slot), info.second, item.netId), false)),
+                    arrayOf(DropAction(item.count, ItemStackRequestSlotData(getSlotTypeFromInventoryId(info.first, slot), info.second, item.netId, FullContainerName(ContainerSlotType.INVENTORY, null)), false)),
                     arrayOf(), null
                 ))
             }

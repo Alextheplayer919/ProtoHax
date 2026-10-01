@@ -12,6 +12,7 @@ import dev.sora.relay.utils.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.cloudburstmc.protocol.bedrock.data.auth.CertificateChainPayload
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacket
 import org.cloudburstmc.protocol.bedrock.packet.DisconnectPacket
 import org.cloudburstmc.protocol.bedrock.packet.LoginPacket
@@ -57,12 +58,11 @@ class RelayListenerXboxLogin(val accessToken: () -> String, val deviceInfo: Xbox
         if (packet is LoginPacket) {
 			session.keyPair = keyPair
             try {
-                packet.chain.clear()
-                packet.chain.addAll(chain)
-				packet.extra = signJWT(packet.extra.split('.')[1], keyPair, base64Encoded = true)
+                packet.authPayload = CertificateChainPayload(chain)
+				packet.clientJwt = signJWT(packet.clientJwt.split('.')[1], keyPair, base64Encoded = true)
             } catch (e: Throwable) {
                 session.inboundPacket(DisconnectPacket().apply {
-                    kickMessage = e.toString()
+                    setKickMessage(e.toString())
                 })
                 logError("login failed", e)
             }

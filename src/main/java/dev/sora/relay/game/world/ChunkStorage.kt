@@ -90,7 +90,8 @@ abstract class ChunkStorage(protected val session: GameSession, override val eve
 				val chunk = getChunk(position.x, position.z) ?: return@forEach
 				if (it.data.readableBytes() == 0) {
 					// cached chunk
-					session.cacheManager.registerCacheCallback(it.blobId) {
+					val blobId = it.blobId ?: return@forEach
+					session.cacheManager.registerCacheCallback(blobId) {
 						chunk.readSubChunk(position.y, it)
 					}
 				} else {

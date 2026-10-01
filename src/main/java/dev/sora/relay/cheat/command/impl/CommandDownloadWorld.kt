@@ -34,7 +34,7 @@ class CommandDownloadWorld(override val eventManager: EventManager, private val 
 	private val handleTick = handle<EventTick> {
 		session.sendPacketToClient(TextPacket().apply {
 			type = TextPacket.Type.TIP
-			message = "§7[§bWorldDownloader§7]§f Download chunks: ${chunkSaved}"
+			setMessage("§7[§bWorldDownloader§7]§f Download chunks: ${chunkSaved}")
 			xuid = ""
 		})
 	}

@@ -37,6 +37,35 @@ import org.cloudburstmc.protocol.bedrock.codec.v575.Bedrock_v575
 import org.cloudburstmc.protocol.bedrock.codec.v582.Bedrock_v582
 import org.cloudburstmc.protocol.bedrock.codec.v589.Bedrock_v589
 import org.cloudburstmc.protocol.bedrock.codec.v594.Bedrock_v594
+import org.cloudburstmc.protocol.bedrock.codec.v618.Bedrock_v618
+import org.cloudburstmc.protocol.bedrock.codec.v622.Bedrock_v622
+import org.cloudburstmc.protocol.bedrock.codec.v630.Bedrock_v630
+import org.cloudburstmc.protocol.bedrock.codec.v649.Bedrock_v649
+import org.cloudburstmc.protocol.bedrock.codec.v662.Bedrock_v662
+import org.cloudburstmc.protocol.bedrock.codec.v671.Bedrock_v671
+import org.cloudburstmc.protocol.bedrock.codec.v685.Bedrock_v685
+import org.cloudburstmc.protocol.bedrock.codec.v686.Bedrock_v686
+import org.cloudburstmc.protocol.bedrock.codec.v712.Bedrock_v712
+import org.cloudburstmc.protocol.bedrock.codec.v729.Bedrock_v729
+import org.cloudburstmc.protocol.bedrock.codec.v748.Bedrock_v748
+import org.cloudburstmc.protocol.bedrock.codec.v766.Bedrock_v766
+import org.cloudburstmc.protocol.bedrock.codec.v776.Bedrock_v776
+import org.cloudburstmc.protocol.bedrock.codec.v786.Bedrock_v786
+import org.cloudburstmc.protocol.bedrock.codec.v800.Bedrock_v800
+import org.cloudburstmc.protocol.bedrock.codec.v818.Bedrock_v818
+import org.cloudburstmc.protocol.bedrock.codec.v819.Bedrock_v819
+import org.cloudburstmc.protocol.bedrock.codec.v827.Bedrock_v827
+import org.cloudburstmc.protocol.bedrock.codec.v844.Bedrock_v844
+import org.cloudburstmc.protocol.bedrock.codec.v859.Bedrock_v859
+import org.cloudburstmc.protocol.bedrock.codec.v860.Bedrock_v860
+import org.cloudburstmc.protocol.bedrock.codec.v898.Bedrock_v898
+import org.cloudburstmc.protocol.bedrock.codec.v924.Bedrock_v924
+import org.cloudburstmc.protocol.bedrock.codec.v944.Bedrock_v944
+import org.cloudburstmc.protocol.bedrock.codec.v975.Bedrock_v975
+import org.cloudburstmc.protocol.bedrock.codec.v1001.Bedrock_v1001
+import org.cloudburstmc.protocol.bedrock.codec.v2168.Bedrock_v2168
+import org.cloudburstmc.protocol.bedrock.codec.v2169.Bedrock_v2169
+import org.cloudburstmc.protocol.bedrock.codec.v2193.Bedrock_v2193
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacket
 import org.cloudburstmc.protocol.bedrock.packet.LoginPacket
 import org.cloudburstmc.protocol.bedrock.packet.RequestNetworkSettingsPacket
@@ -69,8 +98,36 @@ class RelayListenerAutoCodec(private val session: MinecraftRelaySession) : Minec
             Bedrock_v503.CODEC, Bedrock_v527.CODEC, Bedrock_v534.CODEC,
             Bedrock_v544.CODEC, Bedrock_v557.CODEC, Bedrock_v560.CODEC,
             Bedrock_v567.CODEC, Bedrock_v575.CODEC, Bedrock_v582.CODEC,
-			Bedrock_v589.CODEC, Bedrock_v594.CODEC
-        ).associateBy { it.protocolVersion }
+			Bedrock_v589.CODEC, Bedrock_v594.CODEC,
+            Bedrock_v618.CODEC,
+            Bedrock_v622.CODEC,
+            Bedrock_v630.CODEC,
+            Bedrock_v649.CODEC,
+            Bedrock_v662.CODEC,
+            Bedrock_v671.CODEC,
+            Bedrock_v685.CODEC,
+            Bedrock_v686.CODEC,
+            Bedrock_v712.CODEC,
+            Bedrock_v729.CODEC,
+            Bedrock_v748.CODEC,
+            Bedrock_v766.CODEC,
+            Bedrock_v776.CODEC,
+            Bedrock_v786.CODEC,
+            Bedrock_v800.CODEC,
+            Bedrock_v818.CODEC,
+            Bedrock_v819.CODEC,
+            Bedrock_v827.CODEC,
+            Bedrock_v844.CODEC,
+            Bedrock_v859.CODEC,
+            Bedrock_v860.CODEC,
+            Bedrock_v898.CODEC,
+            Bedrock_v924.CODEC,
+            Bedrock_v944.CODEC,
+            Bedrock_v975.CODEC,
+            Bedrock_v1001.CODEC,
+            Bedrock_v2168.CODEC,
+            Bedrock_v2169.CODEC,
+            Bedrock_v2193.CODEC        ).associateBy { it.protocolVersion }
 
         private fun pickProtocolCodec(version: Int): BedrockCodec {
             var codecResult = BedrockCompat.CODEC

@@ -46,10 +46,10 @@ class MinecraftRelaySession(peer: BedrockPeer, subClientId: Int) : BedrockServer
         packetHandler = SessionCloseHandler {
             logInfo("client disconnect: $it")
             try {
-                client?.disconnect()
+                client?.disconnect(null, false)
                 listeners.forEach { l ->
                     try {
-                        l.onDisconnect(true, it)
+                        l.onDisconnect(true, it.toString())
                     } catch (t: Throwable) {
                         logError("disconnect handle", t)
                     }
@@ -102,7 +102,7 @@ class MinecraftRelaySession(peer: BedrockPeer, subClientId: Int) : BedrockServer
         sendPacket(packet)
     }
 
-	override fun disconnect(reason: String?, hideReason: Boolean) {
+	override fun disconnect(reason: CharSequence?, hideReason: Boolean) {
 		close(reason)
 	}
 
@@ -116,10 +116,10 @@ class MinecraftRelaySession(peer: BedrockPeer, subClientId: Int) : BedrockServer
             packetHandler = SessionCloseHandler {
                 logInfo("server disconnect: $it")
                 try {
-                    this@MinecraftRelaySession.disconnect()
+                    this@MinecraftRelaySession.disconnect(null, false)
                     listeners.forEach { l ->
                         try {
-                            l.onDisconnect(true, it)
+                            l.onDisconnect(true, it.toString())
                         } catch (t: Throwable) {
                             logError("disconnect handle", t)
                         }

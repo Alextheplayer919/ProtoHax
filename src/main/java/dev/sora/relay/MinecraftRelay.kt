@@ -22,7 +22,7 @@ import org.cloudburstmc.protocol.bedrock.BedrockPong
 import org.cloudburstmc.protocol.bedrock.BedrockServerSession
 import org.cloudburstmc.protocol.bedrock.codec.BedrockCodec
 import org.cloudburstmc.protocol.bedrock.codec.compat.BedrockCompat
-import org.cloudburstmc.protocol.bedrock.codec.v567.Bedrock_v567
+import org.cloudburstmc.protocol.bedrock.codec.v2193.Bedrock_v2193
 import org.cloudburstmc.protocol.bedrock.netty.codec.FrameIdCodec
 import org.cloudburstmc.protocol.bedrock.netty.initializer.BedrockClientInitializer
 import org.cloudburstmc.protocol.bedrock.netty.initializer.BedrockServerInitializer
@@ -151,6 +151,6 @@ open class MinecraftRelay(private val listener: MinecraftRelayListener,
             .gameType("Survival")
             .nintendoLimited(false)
             .version(GameSession.RECOMMENDED_VERSION)
-            .protocolVersion(Bedrock_v567.CODEC.protocolVersion)
+            .protocolVersion(Bedrock_v2193.CODEC.protocolVersion)
     }
 }

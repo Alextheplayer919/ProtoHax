@@ -155,7 +155,7 @@ class GameSession : MinecraftRelayPacketListener {
 		sendPacketToClient(TextPacket().apply {
 			type = TextPacket.Type.RAW
 			isNeedsTranslation = false
-			message = "[$COLORED_NAME] $msg"
+			setMessage("[$COLORED_NAME] $msg")
 			xuid = ""
 			sourceName = ""
 		})
@@ -226,7 +226,7 @@ class GameSession : MinecraftRelayPacketListener {
 	}
 
     companion object {
-        const val RECOMMENDED_VERSION = "1.20.0"
+        const val RECOMMENDED_VERSION = "1.26.50"
 		const val COLORED_NAME = "§9§lProtoHax§r"
     }
 }
