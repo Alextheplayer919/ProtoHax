@@ -1,0 +1,98 @@
+name: Build Android APK
+
+# Builds the Android app (ProtoHax-Android) into an .apk.
+# The Android app depends on the ProtoHax library, so this workflow first
+# publishes THIS repository's ProtoHax to Maven Local, then builds the APK
+# against it. (build.yml in this repo only produces the .jar files.)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      android_ref:
+        description: 'ProtoHax-Android branch, tag or commit to build'
+        required: false
+        default: 'stable'
+        type: string
+      build_type:
+        description: 'Gradle build type to assemble'
+        required: false
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    name: Build APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      ANDROID_REPO: hax0r31337/ProtoHax-Android
+      ANDROID_REF: ${{ inputs.android_ref || 'stable' }}
+      BUILD_TYPE: ${{ inputs.build_type || 'debug' }}
+
+    steps:
+      - name: Checkout ProtoHax (library)
+        uses: actions/checkout@v4
+        with:
+          path: ProtoHax
+          submodules: recursive
+
+      - name: Checkout ProtoHax-Android (app)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.ANDROID_REPO }}
+          ref: ${{ env.ANDROID_REF }}
+          path: ProtoHax-Android
+
+      # ProtoHax's build.gradle uses jvmToolchain(21) and its wrapper is Gradle 8.14.
+      - name: Set up JDK 21 (for ProtoHax)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Publish ProtoHax to Maven Local
+        working-directory: ProtoHax
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToMavenLocal --no-daemon
+
+      # ProtoHax-Android uses Android Gradle Plugin 8.0.x and Gradle 8.0,
+      # which need JDK 17 to run.
+      - name: Set up JDK 17 (for Android build)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Android SDK components
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses > /dev/null
+          "$SDKMANAGER" "platforms;android-34" "build-tools;34.0.0" "build-tools;33.0.1"
+
+      - name: Build APK
+        working-directory: ProtoHax-Android
+        run: |
+          chmod +x gradlew
+          TASK=":app:assemble${BUILD_TYPE^}"
+          echo "Running: ./gradlew $TASK"
+          ./gradlew "$TASK" --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: protohax-apk-${{ env.BUILD_TYPE }}-${{ github.sha }}
+          path: ProtoHax-Android/app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
