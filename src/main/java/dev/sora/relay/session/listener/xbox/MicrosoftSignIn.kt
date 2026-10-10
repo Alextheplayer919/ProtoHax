@@ -21,7 +21,7 @@ class MicrosoftAuthException(
 ) : RuntimeException(message)
 
 /**
- * Talks to the Microsoft Live token endpoint used by the Nintendo/Android/iOS Xbox client ids.
+ * Talks to the Microsoft Live token endpoint used by the Android and iOS Xbox client ids.
  * Both the one-time authorization code and the refresh token are sent to the same endpoint
  * with the same client id, which is what Microsoft requires for tokens issued by this flow.
  */

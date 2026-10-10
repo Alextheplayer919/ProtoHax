@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
     val dst = InetSocketAddress("127.0.0.1", 19132)
 	var loginThread: Thread? = null
     val sessionEncryptor = if((tokenFile.exists() || authCodeFile.exists()) && !args.contains("--offline")) {
-		val deviceInfo = XboxDeviceInfo.DEVICE_NINTENDO
+		val deviceInfo = XboxDeviceInfo.DEVICE_ANDROID
 		val signIn = MicrosoftSignIn(deviceInfo, tokenFile, authCodeFile)
 		RelayListenerXboxLogin({ signIn.acquireAccessToken() }, deviceInfo).also {
 			it.tokenCache = XboxIdentityTokenCacheFileSystem(tokenCacheFile, "account")

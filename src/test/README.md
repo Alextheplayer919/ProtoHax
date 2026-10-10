@@ -1,11 +1,11 @@
 # Testing
 
 ## Xbox-authenticated servers
-You need a Microsoft account signed in through the Nintendo client id (`00000000441cc96b`), which is the default in `Main.kt`.
-If you want to use another client id, change `val deviceInfo = XboxDeviceInfo.DEVICE_NINTENDO` in `Main.kt`.
+You need a Microsoft account signed in through the Android Xbox client id (`0000000048183522`), which is the default in `Main.kt`.
+To use the iOS client instead, change `val deviceInfo = XboxDeviceInfo.DEVICE_ANDROID` to `XboxDeviceInfo.DEVICE_IOS` in `Main.kt`.
 
 1. Open this link in your browser and sign in with your Microsoft account:
-   https://login.live.com/oauth20_authorize.srf?client_id=00000000441cc96b&redirect_uri=https://login.live.com/oauth20_desktop.srf&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL
+   https://login.live.com/oauth20_authorize.srf?client_id=0000000048183522&redirect_uri=https://login.live.com/oauth20_desktop.srf&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL
 2. After signing in, the browser lands on `https://login.live.com/oauth20_desktop.srf?code=M.R3_...`. Copy the value of `code`.
 3. Save the code into a file named `.ms_auth_code` in the working directory and run the program.
    The code is one-time and expires within minutes, so use it right away.
