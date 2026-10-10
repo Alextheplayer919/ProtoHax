@@ -82,6 +82,25 @@ jobs:
           yes | "$SDKMANAGER" --licenses > /dev/null
           "$SDKMANAGER" "platforms;android-34" "build-tools;34.0.0" "build-tools;33.0.1"
 
+      # dev.sora.networking:libmitm:1.2.3-raknet is no longer published to the
+      # Maven repo ProtoHax-Android declares (mccheatz.github.io is gone). It is
+      # fetched from a third-party repo at a pinned commit and checked against
+      # SHA-256 hashes; the build fails if either file changes.
+      - name: Install libmitm (pinned, checksum-verified)
+        env:
+          LIBMITM_COMMIT: 460353337cd5589e8840315ee3c1e5748d3aa83b
+          LIBMITM_AAR_SHA256: 596992f7f3bc1620400979d2a8a41c89f43be533f1765330127d0c769bbcbe9d
+          LIBMITM_POM_SHA256: a30b148f1207e1c4635a63d80e147bb84cfa86a98de28d037f32b2024df6ab73
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/SkidderMC/ProtoHax-PackageGit/raw/${LIBMITM_COMMIT}/maven_repo/dev/sora/networking/libmitm/1.2.3-raknet"
+          DEST="$HOME/.m2/repository/dev/sora/networking/libmitm/1.2.3-raknet"
+          mkdir -p "$DEST"
+          curl -fsSL -o "$DEST/libmitm-1.2.3-raknet.aar" "$BASE/libmitm-1.2.3-raknet.aar"
+          curl -fsSL -o "$DEST/libmitm-1.2.3-raknet.pom" "$BASE/libmitm-1.2.3-raknet.pom"
+          echo "${LIBMITM_AAR_SHA256}  $DEST/libmitm-1.2.3-raknet.aar" | sha256sum -c -
+          echo "${LIBMITM_POM_SHA256}  $DEST/libmitm-1.2.3-raknet.pom" | sha256sum -c -
+
       - name: Build APK
         working-directory: ProtoHax-Android
         run: |
