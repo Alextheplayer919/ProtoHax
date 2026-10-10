@@ -85,10 +85,31 @@ jobs:
       - name: Build APK
         working-directory: ProtoHax-Android
         run: |
+          set -o pipefail
           chmod +x gradlew
           TASK=":app:assemble${BUILD_TYPE^}"
           echo "Running: ./gradlew $TASK"
-          ./gradlew "$TASK" --no-daemon
+          ./gradlew "$TASK" --no-daemon 2>&1 | tee "$RUNNER_TEMP/gradle-apk.log"
+
+      - name: Summarize Gradle errors
+        if: failure()
+        run: |
+          LOG="$RUNNER_TEMP/gradle-apk.log"
+          [ -f "$LOG" ] || exit 0
+          {
+            awk '/What went wrong:/{f=1} /^Try:/{f=0} f' "$LOG"
+            grep -E '^e: |^error:|Execution failed for|Could not (resolve|find|determine)' "$LOG"
+          } | sed -e 's/\r//g' -e 's/%/%25/g' | grep -v '^\s*$' | head -40 | while IFS= read -r line; do
+            echo "::error title=Gradle::$line"
+          done
+
+      - name: Upload Gradle log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-apk-log-${{ github.sha }}
+          path: ${{ runner.temp }}/gradle-apk.log
+          if-no-files-found: warn
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
