@@ -11,6 +11,7 @@ import dev.sora.relay.session.listener.RelayListenerAutoCodec
 import dev.sora.relay.session.listener.RelayListenerEncryptedSession
 import dev.sora.relay.session.listener.RelayListenerNetworkSettings
 import dev.sora.relay.session.listener.xbox.RelayListenerXboxLogin
+import dev.sora.relay.session.listener.xbox.MicrosoftSignIn
 import dev.sora.relay.session.listener.xbox.XboxDeviceInfo
 import dev.sora.relay.session.listener.xbox.cache.XboxIdentityTokenCacheFileSystem
 import dev.sora.relay.utils.logInfo
@@ -23,6 +24,7 @@ import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
 val tokenFile = File(".ms_refresh_token")
+val authCodeFile = File(".ms_auth_code")
 val tokenCacheFile = File(".token_cache.json")
 
 fun main(args: Array<String>) {
@@ -31,13 +33,10 @@ fun main(args: Array<String>) {
 
     val dst = InetSocketAddress("127.0.0.1", 19132)
 	var loginThread: Thread? = null
-    val sessionEncryptor = if(tokenFile.exists() && !args.contains("--offline")) {
-		val deviceInfo = XboxDeviceInfo.DEVICE_NINTENDO
-		RelayListenerXboxLogin({
-			val (accessToken, refreshToken) = deviceInfo.refreshToken(tokenFile.readText())
-			tokenFile.writeText(refreshToken)
-			accessToken
-		}, deviceInfo).also {
+    val sessionEncryptor = if((tokenFile.exists() || authCodeFile.exists()) && !args.contains("--offline")) {
+		val deviceInfo = XboxDeviceInfo.DEVICE_ANDROID
+		val signIn = MicrosoftSignIn(deviceInfo, tokenFile, authCodeFile)
+		RelayListenerXboxLogin({ signIn.acquireAccessToken() }, deviceInfo).also {
 			it.tokenCache = XboxIdentityTokenCacheFileSystem(tokenCacheFile, "account")
 			loginThread = thread {
 				it.forceFetchChain()
