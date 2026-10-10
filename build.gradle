@@ -46,9 +46,11 @@ shadowJar {
     configurations = [project.configurations.embed]
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
     dependencies {
-        // Consumers (e.g. ProtoHax-Android) provide the Kotlin stdlib. Without this,
-        // okhttp pulled in via :msftauth bundles a second copy of it.
+        // Consumers (e.g. ProtoHax-Android) provide the Kotlin stdlib and its
+        // annotations jar. Without this, okhttp pulled in via :msftauth bundles
+        // second copies of them.
         exclude(dependency('org.jetbrains.kotlin:.*'))
+        exclude(dependency('org.jetbrains:annotations:.*'))
     }
 }
 
