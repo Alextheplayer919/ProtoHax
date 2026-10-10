@@ -45,6 +45,11 @@ shadowJar {
     archiveClassifier.set('')
     configurations = [project.configurations.embed]
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    dependencies {
+        // Consumers (e.g. ProtoHax-Android) provide the Kotlin stdlib. Without this,
+        // okhttp pulled in via :msftauth bundles a second copy of it.
+        exclude(dependency('org.jetbrains.kotlin:.*'))
+    }
 }
 
 publishing {
