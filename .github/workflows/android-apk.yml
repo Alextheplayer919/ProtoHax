@@ -116,9 +116,10 @@ jobs:
           LOG="$RUNNER_TEMP/gradle-apk.log"
           [ -f "$LOG" ] || exit 0
           {
-            awk '/What went wrong:/{f=1} /^Try:/{f=0} f' "$LOG"
-            grep -E '^e: |^error:|Execution failed for|Could not (resolve|find|determine)' "$LOG"
-          } | sed -e 's/\r//g' -e 's/%/%25/g' | grep -v '^\s*$' | head -40 | while IFS= read -r line; do
+            grep -E '^e: |^error:' "$LOG"
+            awk '/What went wrong:/{f=1} /^\* Try:/{f=0} f' "$LOG"
+            grep -E 'Execution failed for|Could not (resolve|find|determine)' "$LOG"
+          } | sed -e 's/\r//g' -e 's/%/%25/g' | grep -v '^\s*$' | head -60 | while IFS= read -r line; do
             echo "::error title=Gradle::$line"
           done
 
